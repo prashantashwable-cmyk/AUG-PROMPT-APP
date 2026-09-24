@@ -18,6 +18,13 @@ Make the whole flow usable by real people:
 - field screens in English, Marathi and Hindi
 
 ## Build
+**Reuse first (D-31).** Open the **Step 10** rows in `docs/mvp/REUSE_MAP.md`.
+- ◆ canonical code: use it as-is.
+- ★ bridged screens: switch their reads to canonical. Don't rebuild them.
+- ○ legacy screens over about 600 lines: build a thin new screen that reuses their components.
+
+Put a one-line "why not reuse" in the PR for anything new.
+
 Reuse or simplify: `CustomerHomeDashboardScreen`, `CustomerDocumentVaultScreen`, `CustomerSupportTicketScreen` (or ServiceCase), `CustomerNotificationCenterScreen`, `RevenueProfitAnalytics`/`SalesFunnelAnalytics` (as data only), `notificationService`, and `src/lib/language.ts`.
 
 1. **Customer home: "My Lift".**
@@ -30,6 +37,7 @@ Reuse or simplify: `CustomerHomeDashboardScreen`, `CustomerDocumentVaultScreen`,
      - raise a blocker
      - approve handover
      - view AMC
+     - the **EMERGENCY** button and emergency number (D-28, built in Step 09), always visible once the lift is installed
    - **Multiple orders:** if the customer has more than one order, show a simple list first.
    - **Customer login** (D-13): an invited email is linked to the Customer record on first sign-in. **No self-signup into other roles.**
 2. **Owner view** (read-only, one page, mobile-friendly):

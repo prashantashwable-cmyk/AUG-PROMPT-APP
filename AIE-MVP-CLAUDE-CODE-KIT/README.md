@@ -16,7 +16,7 @@ I did a quick **read-only** look at `MVP-V3-200-AS` (commit `fc505b8`) so the pr
 | 4 | The data model has **no Task, no Blocker, no survey or site-ready stages, and no Owner, Sales or QC roles**. | These are the core of "current task, owner, due date". | They are built additively in Step 03. Everything else (quote, payments, PO, installation, QC, handover, AMC, audit) already exists and is **reused**. |
 | 5 | The previous build kept stalling on "missing credential". | It wasted phases. | The kit tells Claude **not to loop**: use the emulator, and hand anything that needs real credentials to you as a checklist. |
 
-I also resolved **27 gaps and ambiguities** in your master prompt. They're in `repo-files/docs/mvp/DECISIONS.md`, and you can change any of them. Examples:
+I also resolved **31 gaps and ambiguities** in your master prompt. They're in `repo-files/docs/mvp/DECISIONS.md`, and you can change any of them. Examples:
 - when a Lead becomes an Order
 - stage vs status (hold and cancel)
 - exact progress % and health rules
@@ -24,6 +24,22 @@ I also resolved **27 gaps and ambiguities** in your master prompt. They're in `r
 - payment gates with Admin override
 - markup vs margin
 - never hard-coding GST
+
+### How the kit keeps new code to a minimum
+The previous 62-phase build left a lot of usable work behind. The kit makes Claude use it before writing anything new (D-31, `REUSE_MAP.md`):
+- **Use as-is (◆).** The canonical data model (30 entities), repositories, audit log, duplicate-write protection, permissions, the order-view service, the work-queue service and the control tower.
+- **Switch reads only (★).** **16 screens already save to the shared database** and only read from the old browser store. Examples: lead detail, lead kanban, payment collection, PO generator, supplier tracking, site/delivery checklist, technician check-in, photo evidence, QC assignment, the three handover screens, and compliance. Fixing these is mostly changing where they read from.
+- **Thin new screens.** Some legacy screens are 1,000–1,650 lines. For those, Claude builds a small MVP screen that reuses their parts, instead of rewiring all of it.
+- **Reuse the old tests.** `full-company-simulation.ts` already runs a whole project, including a QC fail → rework loop. It gets adapted, not rewritten.
+- **Enforced by the reviewer.** The scope-guard reviewer warns whenever Claude builds something new that the reuse map says already exists.
+
+Genuinely new code is limited to: Task, Blocker, the stage/progress/health rules, the order service, the `MVP_MODE` navigation filter, three new roles, the emergency flow, and a few thin screens.
+
+### What was added from V4
+- **Emergency button (D-28).** Alerts the on-call technician and the Admin.
+- **Licence before legal handover (D-29).** Handover waits for the statutory licence, unless the Admin overrides.
+- **Optional survey fee (D-30).** Off by default.
+- **V4 kept for later.** The full V4 prompt plus a V4→MVP roadmap are in `docs/mvp/future/`. They are reference only, and each V4 feature has a real-data trigger for when to build it.
 
 ---
 
@@ -58,9 +74,11 @@ AIE-MVP-CLAUDE-CODE-KIT/
     ├── .claude/agents/mvp-scope-guard.md   reviewer sub-agent (catches scope creep)
     └── docs/mvp/
         ├── MVP_SPEC.md            your master prompt (source of truth)
-        ├── DECISIONS.md           27 resolved decisions (edit to override)
+        ├── DECISIONS.md           31 resolved decisions (edit to override)
+        ├── REUSE_MAP.md           existing screens/services/tests to reuse, per step
+        ├── future/                V4 vision + V4→MVP roadmap (reference only, never built in Phase 1)
         ├── REPO_FACTS.md          what the pre-inspection found
-        ├── ACCEPTANCE_SCENARIOS.md exact test data + expected results (S1–S8)
+        ├── ACCEPTANCE_SCENARIOS.md exact test data + expected results (S1–S10)
         └── PROGRESS.md            the hand-over log between sessions
 ```
 
@@ -109,10 +127,10 @@ AIE-MVP-CLAUDE-CODE-KIT/
 | Step | You get | Your job |
 |---|---|---|
 | 00 | Kit installed, tests runnable, baseline recorded | Add the setup script if asked; merge |
-| 01 | `MVP_SIMPLIFICATION_AUDIT.md`, plus about 10 questions for you | **Answer and approve** |
+| 01 | `MVP_SIMPLIFICATION_AUDIT.md`, a verified reuse map, plus about 10 questions for you (survey fee, emergency number, licence process…) | **Answer and approve** |
 | 02 | `MVP_REFACTOR_PLAN.md` with exact files for every step | **Approve** |
 | 03–11 | One working slice per step, each with checks and a draft PR | Skim the report and screenshots; merge |
-| 12 | Scenarios S1–S8 proven, a verification report, a 30-minute UAT script | Do the UAT on real phones |
+| 12 | Scenarios S1–S10 proven, a verification report, a 30-minute UAT script | Do the UAT on real phones |
 | 13 | `MVP_IMPLEMENTATION_REPORT.md` and roadmap | Read the "remains manual" list |
 | 14 | Go-live checklist and first-lift playbook | **Do the Owner actions** (Firebase access, deploy settings, backups, CA and legal checks) |
 | U5 | Weekly improvements from real use | Paste the week's notes |

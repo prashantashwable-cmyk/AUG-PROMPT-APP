@@ -7,8 +7,10 @@ The goal: **ONE LIFT THROUGH THE SYSTEM**, from lead → survey → quote → bo
 | File | What it is |
 |---|---|
 | `docs/mvp/MVP_SPEC.md` | The Owner's requirements |
-| `docs/mvp/DECISIONS.md` | Resolved ambiguities (D-01 to D-27). **These win over the spec where they conflict.** |
+| `docs/mvp/DECISIONS.md` | Resolved ambiguities (D-01 to D-31). **These win over the spec where they conflict.** |
 | `docs/mvp/REPO_FACTS.md` | Pre-inspection notes. Verify them before relying on them. |
+| `docs/mvp/REUSE_MAP.md` | **Existing screens, services and checks to reuse for each step.** Check it before creating any file. |
+| `docs/mvp/future/` | The V4 vision and roadmap. **Reference only. Never build from it in Phase 1.** |
 | `docs/mvp/ACCEPTANCE_SCENARIOS.md` | Test data and expected results |
 | `docs/mvp/PROGRESS.md` | Where we are. **Read it first in every session; update it last.** |
 | `docs/mvp/MVP_SIMPLIFICATION_AUDIT.md`, `docs/mvp/MVP_REFACTOR_PLAN.md` | Created in Steps 01 and 02. Once approved, the plan is binding. |
@@ -26,7 +28,13 @@ The goal: **ONE LIFT THROUGH THE SYSTEM**, from lead → survey → quote → bo
 10. Future scalability
 
 ## Golden rules
-1. **Reuse before you build.** If something is 70% right, fix the remaining 30%.
+1. **Reuse before you build.** If something is 70% right, fix the remaining 30%. Use `REUSE_MAP.md` in this order:
+   - ◆ canonical code, as-is
+   - ★ bridged screens: switch their reads to canonical
+   - thin new screens that reuse existing components and services
+   - rewiring a legacy (○) screen, only when it is small
+
+   Any new screen or service needs a one-line "why not reuse" in the PR (D-31).
 2. **One shared database.** MVP screens use the canonical Firestore repository (`src/repository`, `src/domain/entities.ts`). Never use the legacy `DbManager`/localStorage for MVP data (D-01).
 3. **Additive schema changes only.** Deprecate fields; don't delete them. No silent or destructive migrations. Backfill scripts must be idempotent and dry-run first.
 4. **Hide, don't delete.** Non-MVP screens go behind `MVP_MODE` (D-22). Delete only code proven dead.

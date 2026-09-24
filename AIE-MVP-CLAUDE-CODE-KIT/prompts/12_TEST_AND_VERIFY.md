@@ -18,9 +18,9 @@ Read:
    - `npm run mvp:checks`
    - `npm run checks:legacy`, or the old suite minus the `live-*` scripts
    - the emulator-backed tests
-2. **Scenario coverage.** Make sure `mvp:checks` contains automated versions of **S1–S8** that assert the invariants **I-1 to I-6** after every step.
+2. **Scenario coverage.** Make sure `mvp:checks` contains automated versions of **S1–S10** that assert the invariants **I-1 to I-6** after every step.
    - Use the demo repository or the emulator, with injected time.
-   - Add whatever is missing.
+   - Add whatever is missing, **adapting the existing scripts in REUSE_MAP → Step 12 first**. For example, `full-company-simulation.ts` already covers the QC fail → rework loop. Don't write them from scratch.
 3. **E2E, if a browser is available** (Playwright/Chromium per D-23):
    - Drive S1 through the real UI, at least for the key screens of each role, at phone width for field roles and desktop width for the Admin.
    - Save screenshots to `docs/mvp/verification/`, compressed, with no personal data.
@@ -48,7 +48,7 @@ Each step says what to tap, what they should see, and a tick box.
 ```
 ## Step 12 report
 1. Automated results: lint · build · mvp:checks n/n · legacy n/n · emulator n/n · E2E n/n
-2. Scenario matrix S1–S8: PASS/FAIL each
+2. Scenario matrix S1–S10: PASS/FAIL each
 3. Defects found → fixed (root cause, 1 line each)
 4. Still failing / not verifiable here (why, and who can verify)
 5. Go/No-go for pilot + remaining risks

@@ -18,6 +18,13 @@ Read:
 - A verified booking token moves the order to SITE_READY automatically.
 
 ## Build
+**Reuse first (D-31).** Open the **Step 06** rows in `docs/mvp/REUSE_MAP.md`.
+- ◆ canonical code: use it as-is.
+- ★ bridged screens: switch their reads to canonical. Don't rebuild them.
+- ○ legacy screens over about 600 lines: build a thin new screen that reuses their components.
+
+Put a one-line "why not reuse" in the PR for anything new.
+
 Reuse or simplify: `QuotePricing`, `QuotationPreview`, `PricingRulesMarginConfig`, `DiscountApprovalWorkflow`, `PaymentStageScheduleSetup`, `PaymentCollectionDashboard`, the canonical `Quote`/`QuoteVersion`, `PaymentSchedule`/`Payment` and `ApprovalRequest`. **Rewire to canonical. Don't build new engines.**
 
 1. **Quote builder (Admin).**

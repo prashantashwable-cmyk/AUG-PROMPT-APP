@@ -13,6 +13,13 @@ Read:
 An Admin who opens the app sees one dashboard. Clicking any order shows **one canonical Order View** that answers four questions: what happened, what's next, who owns it, and when it's due.
 
 ## Build
+**Reuse first (D-31).** Open the **Step 04** rows in `docs/mvp/REUSE_MAP.md`.
+- ◆ canonical code: use it as-is.
+- ★ bridged screens: switch their reads to canonical. Don't rebuild them.
+- ○ legacy screens over about 600 lines: build a thin new screen that reuses their components.
+
+Put a one-line "why not reuse" in the PR for anything new.
+
 1. **Universal Order View.**
    - **Extend the existing** `src/services/projectOperatingView.ts` and `src/components/ProjectOperatingView.tsx`. Don't write a parallel one.
    - It must show every field in the spec §8 example: order code, customer, site, lift, current stage, progress %, next action (the current task title), owner, due date (Asia/Kolkata), blocker, payment (paid / total, ₹ in en-IN format) and health badge.

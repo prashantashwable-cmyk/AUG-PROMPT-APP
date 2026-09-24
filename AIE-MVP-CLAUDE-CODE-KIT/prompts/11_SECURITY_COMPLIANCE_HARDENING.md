@@ -15,6 +15,13 @@ Also, **if** the `/security-review` skill is available, run it on the MVP code p
 Make the MVP safe to use with real customer data. Real access is locked to real roles, evidence is private, every important action is audited, demo shortcuts can't reach production, and compliance paperwork can be recorded.
 
 ## Build and verify
+**Reuse first (D-31).** Open the **Step 11** rows in `docs/mvp/REUSE_MAP.md`.
+- ◆ canonical code: use it as-is.
+- ★ bridged screens: switch their reads to canonical. Don't rebuild them.
+- ○ legacy screens over about 600 lines: build a thin new screen that reuses their components.
+
+Put a one-line "why not reuse" in the PR for anything new.
+
 1. **Authorization, end to end.**
    - Every MVP write goes through a role check in the service layer **and** in `firestore.rules`/storage rules.
    - Remove any MVP code path that trusts a role from client-side state alone.

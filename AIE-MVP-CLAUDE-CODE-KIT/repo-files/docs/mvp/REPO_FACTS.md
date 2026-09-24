@@ -63,6 +63,8 @@
 | Navigation | `src/navigation/surfaces.ts` + `src/components/OperatingSurfacesHome.tsx` (five surfaces). Role routers are in `src/routers/*`. |
 | Candidate legacy screens for MVP pieces | `LeadInbox`, `LeadDetail`, `LeadFollowUpScheduler`, `SiteVisitVerification`, `QuotePricing`, `QuotationPreview`, `PricingRulesMarginConfig`, `DiscountApprovalWorkflow`, `PaymentStageScheduleSetup`, `PaymentCollectionDashboard`, `SupplierOrderStatusTracking`, `PurchaseOrderGenerator`, `TechnicianHomeMyJobsScreen`, `TechnicianCheckInCheckOutScreen`, `InstallationSopChecklistScreen`, `IssueBlockerReportingScreen`, `QualityChecklistMechanicalScreen`, `ReworkAssignmentScreen`, `FinalHandoverChecklistScreen`, `WarrantyAmcRegistrationScreen`, `CustomerHomeDashboardScreen`, `CustomerDocumentVaultScreen`, `RevenueProfitAnalytics`. **Check which store each one uses before reusing it.** |
 
+**For exact reuse modes per step, including the 16 ★ dual-write-bridged screens, see `docs/mvp/REUSE_MAP.md`.**
+
 ## 5. History you must know
 - The repo was built by an earlier 62-phase "AIEC Claude Code Sequential Improvement Pack". Its record is in `docs/aiec-implementation-log.md`, `docs/architecture/FINAL-OPERATING-MODEL.md` and about 60 other docs. `docs/` is about 15 MB, mostly screenshots.
 - Its final verdict, in `docs/production/FINAL-CUTOVER-DECISION.md`, was **"PRODUCTION READINESS BLOCKED"**. The sandbox never had live Firebase credentials. That pack also warned that the live deployment was probably built without `VITE_APP_ENV=production`, so demo bypass logins may be live.

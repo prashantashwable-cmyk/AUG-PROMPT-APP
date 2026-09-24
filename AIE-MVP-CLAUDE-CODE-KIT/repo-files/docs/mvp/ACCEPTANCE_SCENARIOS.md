@@ -68,8 +68,9 @@
 | 12 | admin | Marks the material received, with a photo | INSTALLATION | INSTALLATION → tech1 | 55 | "Installation scheduled" notification |
 | 13a | tech1 | START, CHECK IN, then completes 6 of the 11 checklist items, each with a photo | INSTALLATION | INSTALLATION → tech1 (IN_PROGRESS) | **71** | Progress = round(55 + 30 × 6/11) |
 | 13b | tech1 | Completes the remaining 5 items, then COMPLETE | QC_HANDOVER | QC_INSPECTION → qc | 90 | "QC required" notification |
-| 14 | qc | PASS, with test results and remarks | QC_HANDOVER | HANDOVER → admin | 95 | COLLECT_FINAL_PAYMENT is open. "Handover ready" notification. |
+| 14 | qc | PASS, with test results and remarks | QC_HANDOVER | HANDOVER → admin | 95 | COLLECT_FINAL_PAYMENT and STATUTORY_LICENCE (+30 days) are also open. "Handover ready" notification. |
 | 15 | admin | Records the final payment as PAID | QC_HANDOVER | HANDOVER → admin | 95 | Payment shows ₹11,80,000 / ₹11,80,000 |
+| 15b | admin | Marks the "lift license" compliance document DONE, with a file attached (fixture PDF) | QC_HANDOVER | HANDOVER → admin | 95 | STATUTORY_LICENCE completes (D-29) |
 | 16 | cust → admin | The customer approves the handover (OTP or signature if supported, otherwise a confirmation tick); the Admin completes it with photos and documents | AMC | AMC_FOLLOW_UP → admin (due = warranty end − 90 days) | 100 | Order is COMPLETED. The Warranty ends 12 months after handover. The AMC status is WARRANTY. |
 
 ## S2: Customer delay
@@ -153,3 +154,32 @@
 | A non-admin changes a role, a payment status or a quote price | Denied |
 | cust or tech1 reads a quote's `estimatedCost` | Not visible. Stored separately, or stripped by the server. |
 | A signed-out user reads anything | Denied |
+
+## S9: Emergency (D-28)
+1. Run S1 to the end (the order is COMPLETED, stage AMC). The Admin sets tech2 as today's on-call technician.
+2. cust presses **EMERGENCY** and chooses "Lift stuck between floors".
+3. **Expect:**
+   - a `ServiceCase` with priority P0
+   - an EMERGENCY_RESPONSE → tech2 task, due +45 minutes
+   - immediate in-app alerts to the Admin, the Owner and tech2
+   - the case at the top of Needs Attention, in red
+   - the customer sees "If someone is trapped and unwell, call 112 now"
+4. Move the clock forward 46 minutes without anyone acknowledging.
+5. **Expect:** the case shows as overdue.
+6. tech2 acknowledges, then resolves it with a note and a photo.
+7. **Expect:** the case is resolved, the time to acknowledge and the time to resolve are recorded, and everything is audited.
+
+**Variant:** no on-call technician is set, so the task goes to the Admin.
+
+## S10: Licence pending at handover (D-29)
+1. Run S1 to step 15. **Skip step 15b.**
+2. The Admin tries to complete the handover.
+3. **Expect:** it is refused, with the message "Statutory licence not done".
+4. The Admin overrides with the reason "Technical handover accepted; licence pending".
+5. **Expect:**
+   - the order is COMPLETED and the stage is AMC
+   - **the STATUTORY_LICENCE task stays open**
+   - the order appears under Needs Attention → "Licence pending"
+   - the override is audited
+6. The Admin later marks the licence DONE.
+7. **Expect:** the task completes and the order leaves "Licence pending".

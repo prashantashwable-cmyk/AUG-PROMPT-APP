@@ -92,6 +92,7 @@
 |---|---|---|
 | Lead created | LEAD | QUALIFY_LEAD → lead's sales owner, +2 days |
 | Lead qualified | QUALIFIED | ASSIGN_SURVEYOR → Admin, +1 day |
+| Lead qualified, and `SURVEY_FEE_INR > 0` (D-30) | QUALIFIED | COLLECT_SURVEY_FEE → Admin, +2 days. The surveyor can't be assigned until the fee is PAID or the Admin waives it (audited). |
 | Surveyor assigned | SURVEY | SURVEY → surveyor, scheduled date (default +3 days) |
 | Survey FEASIBLE | QUOTE | PREPARE_QUOTE → Admin, +2 days |
 | Survey REQUIRES_CORRECTION | stays SURVEY | SITE_CORRECTION → customer, +14 days. When the customer completes it, create SURVEY again. |
@@ -104,12 +105,13 @@
 | Admin confirms site ready | DELIVERY | TRACK_DELIVERY → Admin (or supplier), due = PO expected delivery date, **and** COLLECT_DELIVERY_PAYMENT → Admin, delivery date +2 days |
 | Material received at site | INSTALLATION | INSTALLATION → technician, +21 days |
 | Installation checklist complete | QC_HANDOVER | QC_INSPECTION → QC, +2 days |
-| QC PASS | stays QC_HANDOVER | HANDOVER → Admin (customer approves), +3 days, **and** COLLECT_FINAL_PAYMENT → Admin, +3 days |
+| QC PASS | stays QC_HANDOVER | HANDOVER → Admin (customer approves), +3 days, **and** COLLECT_FINAL_PAYMENT → Admin, +3 days, **and** STATUTORY_LICENCE → Admin, +30 days (D-29) |
 | QC REWORK | stays QC_HANDOVER | REWORK → technician, +3 days. Also creates a `Snag`. When REWORK completes, create QC_INSPECTION again. |
 | QC FAIL | stays QC_HANDOVER | Order status → ON_HOLD, and REVIEW_HOLD → Admin, +1 day |
 | Handover completed | AMC | Order status → COMPLETED, a Warranty record is created, and AMC_FOLLOW_UP → Admin, due = warranty end − 90 days |
 | Order put ON_HOLD | unchanged | REVIEW_HOLD → Admin, due = hold review date. **Required, so a held order never disappears.** |
 | Order CANCELLED | unchanged | All open tasks → CANCELLED. Payments are left untouched. |
+| EMERGENCY raised (D-28), on any installed lift | unchanged | EMERGENCY_RESPONSE → today's on-call technician (or the Admin if none is set), due +45 minutes. The Admin and Owner are alerted immediately. |
 
 **D-09 Due-date defaults** live in a **single constants/config file**, set to the values in D-08. Every due date shown in the UI comes from a task.
 
@@ -180,7 +182,7 @@ The Admin's "Needs Attention" section shows every order whose health is not ON_T
 |---|---|
 | Enter SITE_READY | Token PAID |
 | Technician presses START on the INSTALLATION task | Delivery payment PAID. The material itself can be marked received without it. |
-| Complete handover | Final payment PAID |
+| Complete handover | Final payment PAID **and** STATUTORY_LICENCE done (D-29). The Admin can override either one, with a reason. |
 
 - Refunds are recorded as REFUNDED with a reference. The software moves no money ⚖ VERIFY refund terms in the customer agreement.
 
@@ -265,3 +267,34 @@ The Admin's "Needs Attention" section shows every order whose health is not ON_T
 - Types: lift license, statutory inspection, contractor responsibility, insurance, GST invoice, TDS, customer agreement, partner agreement.
 - Reuse `DocumentRecord`.
 - The software records compliance. It does not guarantee it.
+
+## G. Additions carried over from the V4 workflow (small on purpose)
+
+**D-28 Emergency and breakdown (life safety).**
+- **Any installed lift's customer (and a resident, if the plan adds that access) has one EMERGENCY button, plus an emergency phone number shown on the Order View and in AMC.** The number is configured.
+- Pressing it creates a canonical `ServiceCase` with priority `P0`, and an EMERGENCY_RESPONSE task for today's **on-call technician**. The Admin sets the on-call technician per day with a simple setting; if none is set, the task goes to the Admin.
+- **Alerts:** in-app, to the Admin, the Owner and the technician, straight away. Use WhatsApp or SMS only if they already work.
+- **Timing:** the task is due in 45 minutes, which is configurable ⚖ VERIFY the right target. An unacknowledged emergency shows at the top of Needs Attention in red.
+- **Shown on screen:** "If someone is trapped and unwell, call 112 now." ⚖ VERIFY the wording.
+- **Not in Phase 1:** no rescue guidance, no call bridging, no GPS dispatch.
+- Reuse the UI parts of `EmergencyEscalationAlert.tsx`, but build a thin new flow (REUSE_MAP).
+
+**D-29 Statutory licence before legal handover** ⚖ VERIFY the process with the lift inspector or a consultant.
+- QC PASS creates a STATUTORY_LICENCE task (Admin, +30 days). It completes when the "lift license" compliance document (D-27) is DONE and a file is attached.
+- **Handover completion needs the licence to be DONE.** The Admin can override with a reason, e.g. "technical handover accepted by customer; licence pending".
+- If the Admin overrides, the order completes, **but the STATUTORY_LICENCE task stays open** and shows under Needs Attention → "Licence pending" until it is done.
+- The software records this. It does not make the installation legal.
+
+**D-30 Optional survey fee.**
+- `SURVEY_FEE_INR` in config. The default is **0, which means off**.
+- When it is above 0:
+  - qualification creates a COLLECT_SURVEY_FEE task and a SURVEY_FEE payment record, both before the surveyor is assigned
+  - the Admin can waive the fee, with a reason (audited)
+  - when the order is booked, the fee is credited against the booking token, using the same milestone mechanics as D-14 ⚖ VERIFY the refund terms
+- The Owner decides the amount in Step 01.
+
+**D-31 Reuse first.**
+- Every step checks `docs/mvp/REUSE_MAP.md` before creating files.
+- Prefer ◆ canonical code, then ★ bridged screens (switch their reads), then thin new screens.
+- Rewire ○ legacy screens only if they are small.
+- Every new screen or service gets a one-line "why not reuse" in the PR.

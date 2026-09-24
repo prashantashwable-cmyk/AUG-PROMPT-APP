@@ -14,6 +14,13 @@ Read:
 A technician opens the app on a phone at the site and sees only TODAY's work. They press START → CHECK IN → do the checklist with photos → COMPLETE, and can report BLOCKED in two taps. **No gamification.**
 
 ## Build
+**Reuse first (D-31).** Open the **Step 08** rows in `docs/mvp/REUSE_MAP.md`.
+- ◆ canonical code: use it as-is.
+- ★ bridged screens: switch their reads to canonical. Don't rebuild them.
+- ○ legacy screens over about 600 lines: build a thin new screen that reuses their components.
+
+Put a one-line "why not reuse" in the PR for anything new.
+
 Reuse or simplify: `TechnicianHomeMyJobsScreen`, `TechnicianCheckInCheckOutScreen`, `InstallationSopChecklistScreen`, `IssueBlockerReportingScreen`, `CameraCapture`, and the canonical `InstallationJob`. **Rewire to canonical.** Hide leaderboards, coins, badges and similar screens behind `MVP_MODE`; don't delete them.
 
 1. **Technician home: TODAY.**

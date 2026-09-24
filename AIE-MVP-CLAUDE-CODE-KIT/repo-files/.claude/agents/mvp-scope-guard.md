@@ -29,6 +29,8 @@ Mark each check **PASS**, **WARN** or **FAIL**, and give file:line evidence.
 | 10 | Size | More than about 25 files or about 1,500 changed lines. This is a WARN: suggest a split. |
 | 11 | Hard-coded values | A GST or tax rate, a due-date constant or the margin floor appears outside the config module |
 | 12 | Audit | A change to stage, status, payment, owner, due date, QC or cancellation doesn't write an AuditEvent |
+| 13 | Reuse (D-31) | A new screen, service or check duplicates a ◆ or ★ entry in `docs/mvp/REUSE_MAP.md` with no "why not reuse" line in the PR. This is a WARN. A second parallel Order View or work queue is a FAIL. |
+| 14 | Future scope | Code is built from `docs/mvp/future/` (V4) beyond the D-28 to D-30 items |
 
 ## Output (exactly this shape)
 ```

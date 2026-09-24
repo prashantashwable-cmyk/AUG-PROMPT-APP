@@ -17,6 +17,13 @@ Read:
 - Delays show up on the Admin dashboard automatically.
 
 ## Build
+**Reuse first (D-31).** Open the **Step 07** rows in `docs/mvp/REUSE_MAP.md`.
+- ◆ canonical code: use it as-is.
+- ★ bridged screens: switch their reads to canonical. Don't rebuild them.
+- ○ legacy screens over about 600 lines: build a thin new screen that reuses their components.
+
+Put a one-line "why not reuse" in the PR for anything new.
+
 Reuse or simplify: `SupplierDirectory`, `PurchaseOrderGenerator`, `SupplierOrderStatusTracking`, `SiteDeliveryChecklistScreen`, `MaterialReceivedConfirmationScreen`, and the canonical `Supplier`, `PurchaseOrder`, `Shipment` and `DeliveryReceipt` entities. **Rewire to canonical.** Keep a supplier portal only if the audit says it works; the default is Admin-managed.
 
 1. **Customer: site readiness.**

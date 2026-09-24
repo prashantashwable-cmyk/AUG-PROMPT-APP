@@ -18,7 +18,7 @@ Base every statement on the actual commits and checks, **not on intentions**. It
 4. What we disabled or hid (with how to re-enable: `MVP_MODE` off, or the flag or route)
 5. What we built
 6. What remains manual. Be explicit: payment verification, supplier updates, technician selection, AMC offers, backups…
-7. What remains for V4 (pointer to `PROMPT-MASTER-AUG-2026-GEMINI-V4.md` in the AUG-PROMPT-APP repo)
+7. What remains for V4. Update `docs/mvp/future/FUTURE_V4_ROADMAP.md` tables 1 and 2 with the real Phase 1 status.
 8. Database changes: every added collection and field, the deprecated fields, the backfills, and whether each backfill has run on real data (it should NOT have, from these sessions)
 9. API and service changes
 10. Tests performed, with results (link to VERIFICATION_REPORT)
@@ -27,7 +27,7 @@ Base every statement on the actual commits and checks, **not on intentions**. It
 
 Then add the **Future roadmap** from spec §40: Phase 1 (current) → 2 → 3 → 4 → 5.
 - For each phase, give the **entry criteria based on real data**. For example, "Phase 2 starts when 10 real lifts are completed AND the Admin spends more than X hours/week on Y."
-- Name the measurements the app must already collect to decide that: time in each stage, tasks overdue, blockers by reason, rework rate, Admin actions per order.
+- Confirm that every measurement in `FUTURE_V4_ROADMAP.md` §3 can really be read from the data, and name the gaps. The measurements are: time in each stage, tasks overdue, blockers by reason, rework rate, Admin actions per order.
 
 Also:
 - Update the root `CLAUDE.md` "Commands" section.

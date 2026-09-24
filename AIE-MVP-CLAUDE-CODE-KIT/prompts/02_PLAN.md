@@ -31,13 +31,15 @@ The plan must be concrete enough that each later step prompt can say "do the Ste
    - **anything deprecated**
 3. **Roles and permissions**: the matrix of role × action for the 8 roles. Include the `firestore.rules` and storage-rules changes and the emulator tests that prove them.
 4. **Rules automation**: the D-08 table turned into function signatures, with the idempotency approach and where each event is emitted from (which UI action or service).
-5. **Screen plan**: for each MVP screen, one of:
+5. **Screen plan**, taken from `docs/mvp/REUSE_MAP.md` (D-31): for each MVP screen, one of:
    - reuse as-is
    - rewire to canonical
    - simplify
    - new (small)
 
    Include the files and the role for each. Every screen must say which store it reads and writes.
+   Use the ★ bridged screens wherever they fit, and estimate the lines saved by reusing.
+   Include D-28 (emergency), D-29 (licence before legal handover) and D-30 (optional survey fee).
 6. **Hide plan**: how `MVP_MODE` filters navigation, the command palette and role routers. Confirm legacy screens stay reachable when it is off.
 7. **Check plan**:
    - new `mvp:checks` scripts, including pure-function checks and emulator checks

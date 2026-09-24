@@ -13,6 +13,7 @@ Follow the **Step protocol in CLAUDE.md**. Read, in this order:
 3. `docs/mvp/MVP_SPEC.md`, all of it
 4. `docs/mvp/DECISIONS.md`
 5. `docs/mvp/REPO_FACTS.md`
+6. `docs/mvp/REUSE_MAP.md`
 
 **Do NOT modify application code.** The only files you may create or change are `docs/mvp/MVP_SIMPLIFICATION_AUDIT.md` and `docs/mvp/PROGRESS.md`.
 
@@ -37,7 +38,11 @@ Use the real code as the source of truth. Verify every line of REPO_FACTS.md and
 5. **Integrations.** Gemini, the payment gateway, logistics, accounting/ERP, WhatsApp/SMS. For each: real, stubbed or simulated?
 6. **Security.** `firestore.rules`, storage rules, `authz.ts`, `permissions.ts`, audit, idempotency.
 7. **Tests.** Which of the ~50 check scripts cover code the MVP keeps, and which cover only code that will be hidden.
-8. **Screens.** Classify **all 194** in one table (you can group obvious families): KEEP / SIMPLIFY / DISABLE (hide) / DELETE (only if proven dead) / BUILD / BROKEN. Use `src/workflows/screenRegistry.ts` and `docs/architecture/screen-inventory.csv` as a head start.
+8. **Reuse map.** Verify every row of `docs/mvp/REUSE_MAP.md`:
+   - Is the store mark (◆ ★ ○ □) right?
+   - Do the 16 ★ bridged screens really write canonically?
+   - Correct the map in place, and note the changes in the audit.
+9. **Screens.** Classify **all 194** in one table (you can group obvious families): KEEP / SIMPLIFY / DISABLE (hide) / DELETE (only if proven dead) / BUILD / BROKEN. Use `src/workflows/screenRegistry.ts` and `docs/architecture/screen-inventory.csv` as a head start.
 
 ## Write `docs/mvp/MVP_SIMPLIFICATION_AUDIT.md`
 1. **Executive summary** in 10 lines or fewer, written for a non-technical Owner.
@@ -53,6 +58,9 @@ Use the real code as the source of truth. Verify every line of REPO_FACTS.md and
    - Does the Owner have full admin access to Firebase project `dogwood-torus-v71nt` (console, billing, backups, rules deploy)? If not, who does?
    - Is any real customer data already stored in Firestore or in browsers?
    - Does the existing payment gateway integration take real money?
+   - Survey fee: the amount, or 0 for off (D-30).
+   - The emergency phone number, and who is on call for the first lifts (D-28).
+   - Who handles the statutory lift licence, and how long it usually takes (D-29).
 
 ## Report back (exactly this, then STOP and WAIT)
 ```
