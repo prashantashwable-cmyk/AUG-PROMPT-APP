@@ -4,6 +4,7 @@
 |---|---|
 | [`PROMPT-MASTER-AUG-2026-GEMINI-V4.md`](PROMPT-MASTER-AUG-2026-GEMINI-V4.md) | **Use this one.** V4, "The App Is the Manager" |
 | [`archive/PROMPT-MASTER-AUG-2026-GEMINI-V3.md`](archive/PROMPT-MASTER-AUG-2026-GEMINI-V3.md) | The previous version, kept for comparison |
+| [`AIE-MVP-CLAUDE-CODE-KIT.zip`](AIE-MVP-CLAUDE-CODE-KIT.zip) and [`AIE-MVP-CLAUDE-CODE-KIT/`](AIE-MVP-CLAUDE-CODE-KIT/) | **Phase 1 MVP build kit**: sequential Claude Code (cloud) prompts that refactor `MVP-V3-200-AS` into an MVP for 10–20 real lift orders. Start with its [README](AIE-MVP-CLAUDE-CODE-KIT/README.md). |
 
 ## How to use V4
 1. Open Section 17 (Owner Decisions) and change any default you disagree with.
